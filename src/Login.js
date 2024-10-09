@@ -14,8 +14,8 @@ const Login = () => {
   const handleLogin = (e) => {
     e.preventDefault();
     if (username === 'admin' && password === 'admin') {
-      // If the username and password are correct, navigate to the dashboard
-      navigate('/dashboard');
+      // If the username and password are correct, navigate to the Dashboard
+      navigate('/Dashboard');
     } else {
       // Show an error if login fails
       setError('Invalid username or password');
