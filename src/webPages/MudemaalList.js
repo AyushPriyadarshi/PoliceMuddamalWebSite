@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Table, Button, Dropdown, Modal, Nav } from 'react-bootstrap';
-import axios from '../mockApi'; // Import axios from mockapi.js
+import axios from 'axios'; // Use axios directly for API calls
 import '../cssModules/MudemaalList.css'; // Import the CSS file
 import policeLogo from '../mumbai_logo.png'; // Import your police logo image
 import { Link, useNavigate } from 'react-router-dom';
@@ -12,11 +12,11 @@ const MudemaalList = () => {
   const [showLogoutModal, setShowLogoutModal] = useState(false); // For handling modal
   const navigate = useNavigate(); // For navigation
 
-  // Fetch muddamaal data from the mock API
+  // Fetch muddamaal data from the MySQL API
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('/api/muddamaal');
+        const response = await axios.get('http://your-api-url.com/api/muddamaal'); // Replace with your actual API URL
         setMuddamaalList(response.data);
         setLoading(false);
       } catch (error) {
@@ -56,11 +56,11 @@ const MudemaalList = () => {
       {/* Header Section */}
       <Row className="header-row align-items-center">
         <Col md={2} className="logo-container">
-          <img src={policeLogo} alt="Maharastra Police Logo" className="police-logo" /> {/* Police Logo */}
+          <img src={policeLogo} alt="Maharastra Police Logo" className="police-logo" />
         </Col>
         <Col md={8} className="text-center title-container">
-          <h1 className="website-title">Mumbai Police - Muddamaal Management</h1> {/* Website Title */}
-          <p className="current-time">{currentTime.toLocaleString()}</p> {/* Current Time Below Title */}
+          <h1 className="website-title">Mumbai Police - Muddamaal Management</h1>
+          <p className="current-time">{currentTime.toLocaleString()}</p>
         </Col>
         <Col md={1} className="action-buttons">
           <Button variant="danger" className="logout-btn" onClick={handleLogout}>Log Out</Button>
@@ -70,7 +70,7 @@ const MudemaalList = () => {
       {/* Navigation Tabs */}
       <Nav variant="tabs" defaultActiveKey="/MudemaalList" className="my-3">
         <Nav.Item>
-          <Nav.Link as={Link} to="/Dashboar">Dashboard</Nav.Link>
+          <Nav.Link as={Link} to="/Dashboard">Dashboard</Nav.Link>
         </Nav.Item>
         <Nav.Item>
           <Nav.Link as={Link} to="/MudemaalList" eventKey="list">Mudemaal List</Nav.Link>
