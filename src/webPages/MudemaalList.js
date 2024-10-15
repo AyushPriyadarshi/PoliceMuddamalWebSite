@@ -10,13 +10,15 @@ const MudemaalList = () => {
   const [loading, setLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showLogoutModal, setShowLogoutModal] = useState(false); // For handling modal
+  const [selectedMuddamaal, setSelectedMuddamaal] = useState(null); // New state for selected item
+  const [showDetailsModal, setShowDetailsModal] = useState(false);  // New state for details modal
   const navigate = useNavigate(); // For navigation
 
   // Fetch muddamaal data from the MySQL API
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://your-api-url.com/api/muddamaal'); // Replace with your actual API URL
+        const response = await axios.get('/api/muddamaal'); // Replace with your actual API URL
         setMuddamaalList(response.data);
         setLoading(false);
       } catch (error) {
@@ -49,6 +51,25 @@ const MudemaalList = () => {
   // Function to cancel the logout
   const cancelLogout = () => {
     setShowLogoutModal(false);
+  };
+
+  const handleViewDetails = (item) => {
+    setSelectedMuddamaal(item);
+    setShowDetailsModal(true);
+  };
+
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm('Are you sure you want to delete this record?');
+    if (confirmDelete) {
+      try {
+        await axios.delete(`/api/muddamaal/${id}`);
+        // Fetch the updated list from the API
+        const response = await axios.get('/api/muddamaal');
+        setMuddamaalList(response.data); // Set the updated list
+      } catch (error) {
+        console.error('Error deleting record:', error);
+      }
+    }
   };
 
   return (
@@ -127,13 +148,14 @@ const MudemaalList = () => {
               <thead>
                 <tr>
                   <th>Sr. No</th>
-                  <th>Crime No</th>
-                  <th>Crime Date</th>
-                  <th>Muddamaal No</th>
+                  <th>Fold No</th>                          {/* Changed from Crime No */}
+                  <th>Date of Seizure</th>                   {/* Changed from Crime Date */}
+                  <th>Subject No</th>                       {/* Changed from Muddamaal No */}
                   <th>Category</th>
                   <th>Quantity</th>
-                  <th>Value</th>
-                  <th>Status</th>
+                  <th>Price</th>                            {/* New price field */}
+                  <th>Present Status of Issue</th>          {/* New Present Status of Issue field */}
+                  <th>Police Station</th>                    {/* New Police Station field */}
                   <th>Custody Date</th>
                   <th>Action</th>
                 </tr>
@@ -142,26 +164,29 @@ const MudemaalList = () => {
                 {muddamaalList.map((item, index) => (
                   <tr key={item.id}>
                     <td>{index + 1}</td>
-                    <td>{item.crimeNo}</td>
-                    <td>{item.crimeDate}</td>
-                    <td>{item.muddamaalNo}</td>
-                    <td className={item.category === 'Other' ? 'red-label' : 'green-label'}>
-                      {item.category}
+                    <td>{item.foldNo}</td>                   {/* Updated field */}
+                    <td>{item.dateOfSeizure}</td>            {/* Updated field */}
+                    <td>{item.subjectNo}</td>                 {/* Updated field */}
+                    <td className={item.subjectType === 'Other' ? 'red-label' : 'green-label'}>
+                      {item.subjectType}
                     </td>
                     <td>{item.quantity}</td>
-                    <td>₹{item.value}</td>
-                    <td>{item.status}</td>
+                    <td>{item.price}</td>                      {/* Updated field */}
+                    <td>{item.presentStatusOfIssue}</td>     {/* Updated field */}
+                    <td>{item.policeStation}</td>             {/* Updated field */}
                     <td>{item.custodyDate}</td>
                     <td>
-                      <Button variant="info" className="action-btn">
-                        View
-                      </Button>
-                      <Button variant="warning" className="action-btn">
-                        Edit
-                      </Button>
-                      <Button variant="danger" className="action-btn">
-                        Delete
-                      </Button>
+                      <div className="button-group">
+                        <Button variant="info" className="action-btn" onClick={() => handleViewDetails(item)}>
+                          View
+                        </Button>
+                        <Button variant="warning" className="action-btn">
+                          Edit
+                        </Button>
+                        <Button variant="danger" className="action-btn" onClick={() => handleDelete(item.id)}>
+                          Delete
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -170,6 +195,76 @@ const MudemaalList = () => {
           )}
         </Col>
       </Row>
+
+      {/* Details Modal */}
+      <Modal show={showDetailsModal} onHide={() => setShowDetailsModal(false)} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Details of Muddamaal</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedMuddamaal ? (
+            <Table bordered responsive>
+              <tbody>
+                <tr>
+                  <td><strong>Fold No:</strong></td>
+                  <td>{selectedMuddamaal.foldNo}</td>
+                </tr>
+                <tr>
+                  <td><strong>Date of Seizure:</strong></td>
+                  <td>{selectedMuddamaal.dateOfSeizure}</td>
+                </tr>
+                <tr>
+                  <td><strong>Subject No:</strong></td>
+                  <td>{selectedMuddamaal.subjectNo}</td>
+                </tr>
+                <tr>
+                  <td><strong>Category:</strong></td>
+                  <td>{selectedMuddamaal.subjectType}</td>
+                </tr>
+                <tr>
+                  <td><strong>Reason of Impounding:</strong></td>
+                  <td>{selectedMuddamaal.reasonOfImpounding}</td>
+                </tr>
+                <tr>
+                  <td><strong>Quantity:</strong></td>
+                  <td>{selectedMuddamaal.quantity}</td>
+                </tr>
+                <tr>
+                  <td><strong>Price:</strong></td>
+                  <td>{selectedMuddamaal.price}</td>
+                </tr>
+                <tr>
+                  <td><strong>Present Status of Issue:</strong></td>
+                  <td>{selectedMuddamaal.presentStatusOfIssue}</td>
+                </tr>
+                <tr>
+                  <td><strong>Police Station:</strong></td>
+                  <td>{selectedMuddamaal.policeStation}</td>
+                </tr>
+                <tr>
+                  <td><strong>Custody Date:</strong></td>
+                  <td>{selectedMuddamaal.custodyDate}</td>
+                </tr>
+                <tr>
+                  <td><strong>Details:</strong></td>
+                  <td>{selectedMuddamaal.details}</td>
+                </tr>
+                <tr>
+                  <td><strong>Officer Incharge:</strong></td>
+                  <td>{selectedMuddamaal.officerName}</td>
+                </tr>
+              </tbody>
+            </Table>
+          ) : (
+            <p>No details available</p>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDetailsModal(false)}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       {/* Footer */}
       <Row>
