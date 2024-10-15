@@ -171,7 +171,7 @@ const MudemaalList = () => {
                       {item.subjectType}
                     </td>
                     <td>{item.quantity}</td>
-                    <td>{item.price}</td>                      {/* Updated field */}
+                    <td>₹{item.price}</td>                      {/* Updated field */}
                     <td>{item.presentStatusOfIssue}</td>     {/* Updated field */}
                     <td>{item.policeStation}</td>             {/* Updated field */}
                     <td>{item.custodyDate}</td>

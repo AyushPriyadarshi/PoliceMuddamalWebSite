@@ -13,6 +13,8 @@ const Dashboard = () => {
   const [vehicleCount, setVehicleCount] = useState(0);
   const [poStayCount, setPoStayCount] = useState(0);
   const [groupedCategories, setGroupedCategories] = useState([]);
+  const [currentLocationCount, setCurrentLocationCount] = useState({});
+  const [groupedReasons, setGroupedReasons] = useState([]); // New state for reason of impounding
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const navigate = useNavigate();
 
@@ -54,10 +56,34 @@ const Dashboard = () => {
         // Convert the consolidatedCategories object to an array to be used in your table
         const groupedCategories = Object.entries(consolidatedCategories).map(([category, quantity]) => ({
           category,
-          quantity
+          quantity,
         }));
-        setGroupedCategories(groupedCategories); 
-        
+        setGroupedCategories(groupedCategories);
+        // Count occurrences of current location
+        const locationCount = data.reduce((acc, item) => {
+          const location = item.presentStatusOfIssue;
+          acc[location] = acc[location] ? acc[location] + 1 : 1;
+          return acc;
+        }, {});
+        setCurrentLocationCount(locationCount);
+        // Group and count reasons for impounding, ignoring blank or missing values
+        const reasonCounts = data.reduce((acc, item) => {
+          const reason = item.reasonOfImpounding ? item.reasonOfImpounding.trim() : '';
+
+          // Skip if reasonOfImpounding is empty or not present
+          if (reason) {
+            acc[reason] = (acc[reason] || 0) + 1;
+          }
+          return acc;
+        }, {});
+
+        setGroupedReasons(
+          Object.entries(reasonCounts).map(([reason, count]) => ({
+            reason,
+            count,
+          }))
+        );
+
       } catch (error) {
         console.error('Error fetching mudemaal data:', error);
       }
@@ -179,7 +205,7 @@ const Dashboard = () => {
         <Col md={3}>
           <div className="info-box">
             <h3>Total Cost</h3>
-            <p>{totalCost}</p>
+            <p>₹{totalCost}</p>
           </div>
         </Col>
         <Col md={3}>
@@ -225,39 +251,39 @@ const Dashboard = () => {
 
           {/* Second part (2 Tables: Current Location and Reason of Impounding) */}
           <Row>
-            <Col md={6}>
+          <Col md={6}>
               <h4>Current Location of Item</h4>
               <table className="table table-bordered">
                 <thead>
                   <tr>
-                    <th>Item</th>
                     <th>Location</th>
+                    <th>Count</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {mudemaalData.map((item) => (
-                    <tr key={item.id}>
-                      <td>{item.foldNo}</td>
-                      <td>{item.presentStatusOfIssue}</td>
+                  {Object.entries(currentLocationCount).map(([location, count], index) => (
+                    <tr key={index}>
+                      <td>{location}</td>
+                      <td>{count}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </Col>
             <Col md={6}>
-              <h4>Reason for Impounding</h4>
+              <h4>Reason of Impounding</h4>
               <table className="table table-bordered">
                 <thead>
                   <tr>
-                    <th>Item</th>
                     <th>Reason</th>
+                    <th>Count</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {mudemaalData.map((item) => (
-                    <tr key={item.id}>
-                      <td>{item.foldNo}</td>
-                      <td>{item.subjectType === 'Vehicle' ? 'Impounded for legal reasons' : 'Other'}</td>
+                  {groupedReasons.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item.reason}</td>
+                      <td>{item.count}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -266,14 +292,14 @@ const Dashboard = () => {
           </Row>
         </Col>
 
-        {/* Second Flex (Pie Chart) */}
+        {/* Second Flex */}
         <Col md={6}>
-          <h4>Category Distribution</h4>
+          <h4>Category Breakdown (Chart)</h4>
           <canvas id="myChart"></canvas>
         </Col>
       </Row>
 
-      {/* Logout Confirmation Modal */}
+      {/* Logout Modal */}
       <Modal show={showLogoutModal} onHide={cancelLogout}>
         <Modal.Header closeButton>
           <Modal.Title>Confirm Logout</Modal.Title>
@@ -284,17 +310,10 @@ const Dashboard = () => {
             Cancel
           </button>
           <button className="btn btn-danger" onClick={confirmLogout}>
-            Confirm
+            Log Out
           </button>
         </Modal.Footer>
       </Modal>
-
-      {/* Footer */}
-      <Row>
-        <Col className="text-center">
-          <p>Developed by Your Company</p>
-        </Col>
-      </Row>
     </Container>
   );
 };

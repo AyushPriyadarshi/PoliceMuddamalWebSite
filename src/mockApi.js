@@ -13,7 +13,7 @@ let muddamaalData = [
     dateOfSeizure: '27-02-2015',                  // Changed from crimeDate to dateOfSeizure
     subjectNo: '32/15',                           // Changed from muddamaalNo to subjectNo
     quantity: 2,
-    price: '₹0',                                // New price field
+    price: '0',                               // New price field
     presentStatusOfIssue: 'P.O. Stay. at',       // New presentStatusOfIssue field
     policeStation: 'Station A',                   // New policeStation field
     custodyLog: 'Custody Log',
@@ -27,8 +27,9 @@ let muddamaalData = [
     dateOfSeizure: '27-02-2015',
     subjectNo: '31/15',
     quantity: 2,
-    price: '₹0',
+    price: '0',
     presentStatusOfIssue: 'P.O. Stay. at',
+    reasonOfImpounding:'', 
     policeStation: 'Station B',
     custodyLog: 'Custody Log',
     custodyDate: '03/02/2024 13:17',
@@ -42,7 +43,8 @@ let muddamaalData = [
     subjectNo: '30/15',
     subjectType: 'vehicle',
     quantity: 1,
-    price: '₹25000',
+    price: '25000',
+    reasonOfImpounding:'Crime Work',
     presentStatusOfIssue: 'has been returned',
     policeStation: 'Station C',
     custodyLog: 'Custody Log',
@@ -56,7 +58,8 @@ let muddamaalData = [
     subjectNo: '29/15',
     subjectType: 'other',
     quantity: 2,
-    price: '₹2',
+    price: '2',
+    reasonOfImpounding:'', 
     presentStatusOfIssue: 'P.O. Stay. at',
     policeStation: 'Station D',
     custodyLog: 'Custody Log',
@@ -70,7 +73,8 @@ let muddamaalData = [
     subjectNo: '29/15',
     subjectType: 'Currency',
     quantity: 2,
-    price: '₹400',
+    price: '400',
+    reasonOfImpounding:'', 
     presentStatusOfIssue: 'P.O. Stay. at',
     policeStation: 'Station E',
     custodyLog: 'Custody Log',
@@ -84,7 +88,8 @@ let muddamaalData = [
     subjectNo: '29/15',
     subjectType: 'Mobile and Electronic Equipment',
     quantity: 8,
-    price: '₹55500',
+    price: '55500',
+    reasonOfImpounding:'', 
     presentStatusOfIssue: 'has been returned',
     policeStation: 'Station F',
     custodyLog: 'Custody Log',
@@ -100,7 +105,7 @@ let muddamaalData = [
     subjectNo: '28/15',
     subjectType: 'vehicle',
     quantity: 1,
-    price: '₹20000',
+    price: '20000',
     presentStatusOfIssue: 'has been returned',
     policeStation: 'Station G',
     custodyLog: 'Custody Log',
