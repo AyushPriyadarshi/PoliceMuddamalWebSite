@@ -105,7 +105,6 @@ let muddamaalData = [
     policeStation: 'Station G',
     custodyLog: 'Custody Log',
     custodyDate: '03/02/2024 13:07',
-    subjectType: 'Vehicle',
     details: 'A Mo. Cycle GJ-18-AD-6162',
     officerName:'Ramesh Singh',
     reasonOfImpounding:'Crime Work'
